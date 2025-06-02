@@ -384,6 +384,30 @@
             }
           }
         }
+      },
+      "/getheaderCateforyData": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "get home data",
+          "operationId": "getcategory",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
       }
   },
   "securityDefinitions": {

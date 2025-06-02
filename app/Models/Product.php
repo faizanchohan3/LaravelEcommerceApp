@@ -4,6 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\URL;
+use App\Models\Category;
+use App\Models\Brand;
+use App\Models\ProductAttributes;
+use App\Models\ProductAttributeValue;
+use App\Models\ProductAttr;
+use App\Models\ProductImage;
+use App\Models\ProductAttributeImage;
+use App\Models\Size;
 
 class Product extends Model
 {
@@ -44,18 +54,10 @@ class Product extends Model
     public function product_attribute(){
         return $this->hasMany(ProductAttributes::class);
     }
-
-    public function product_attribute_value(){
-        return $this->hasMany(ProductAttributeValue::class);
+    public function product_attr(){
+        return $this->hasMany(ProductAttr::class,'product_id','id');
     }
 
-    public function product_image(){
-        return $this->hasMany(ProductImage::class);
-    }
-
-    public function product_attribute_image(){
-        return $this->hasMany(ProductAttributeImage::class);
-    }
 
     public function size(){
         return $this->hasMany(Size::class);

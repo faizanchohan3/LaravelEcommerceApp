@@ -64,3 +64,5 @@ Route::prefix('products')->group(function () {
 });
 
 Route::get('/gethomedata',[homebannercontroller::class,'getHomeData']);
+
+Route::get('/getheaderCateforyData',[homebannercontroller::class,'GetSubcateforydata']);
