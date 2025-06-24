@@ -13,5 +13,7 @@ class Size extends Model
 'text'
     ];
 
-
+    public function size(){
+        return $this->belongsTo(ProductAttr::class);
+    }
 }

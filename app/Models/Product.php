@@ -55,7 +55,7 @@ class Product extends Model
         return $this->hasMany(ProductAttributes::class);
     }
     public function product_attr(){
-        return $this->hasMany(ProductAttr::class,'product_id','id');
+        return $this->hasMany(ProductAttr::class,'product_id','id')->with('sizes','colors');
     }
 
 

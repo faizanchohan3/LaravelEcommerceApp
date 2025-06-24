@@ -17,13 +17,24 @@ function preloader() {
 	}
 }
 
-$(window).on('load', function () {
-	preloader();
+// $(window).on('load', function () {
+// 	preloader();
+// 	mainSliderActive();
+// 	thirdSlider();
+// 	h9Slider();
+// 	wowAnimation();
+// });
+
+function loadframe(){
+    preloader();
 	mainSliderActive();
 	thirdSlider();
 	h9Slider();
 	wowAnimation();
-});
+}
+
+
+window.onload=loadframe();
 
 
 
@@ -678,16 +689,48 @@ $('.popup-video').magnificPopup({
 /*=============================================
 	=    	 Slider Range Active  	         =
 =============================================*/
-$("#slider-range").slider({
-	range: true,
-	min: 40,
-	max: 700,
-	values: [120, 570],
-	slide: function (event, ui) {
-		$("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+
+// Function to initialize slider when Vue values are available
+function initializeSliderFromVue() {
+	var lowprice = window.vueLowPrice;
+	var highprice = window.vueHighPrice;
+
+
+	if (lowprice !== undefined && highprice !== undefined) {
+
+
+		$("#slider-range").slider({
+			range: true,
+			min: lowprice,
+			max: highprice,
+			values: [lowprice, highprice],
+			slide: function (event, ui) {
+				$("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                $("#lowprice").val(ui.values[0]);
+                $("#highprice").val(ui.values[1]);
+
+			}
+		});
+		$("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
+		return true; // Success
 	}
-});
-$("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
+	return false; // Values not ready yet
+}
+
+// Try to initialize immediately
+if (!initializeSliderFromVue()) {
+	// If not ready, poll every 100ms until values are available
+	var checkInterval = setInterval(function() {
+		if (initializeSliderFromVue()) {
+			clearInterval(checkInterval); // Stop polling once initialized
+		}
+	}, 100);
+
+	// Stop polling after 10 seconds to prevent infinite loop
+	setTimeout(function() {
+		clearInterval(checkInterval);
+	}, 10000);
+}
 
 
 /*=============================================

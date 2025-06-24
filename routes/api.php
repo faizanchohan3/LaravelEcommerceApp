@@ -66,3 +66,13 @@ Route::prefix('products')->group(function () {
 Route::get('/gethomedata',[homebannercontroller::class,'getHomeData']);
 
 Route::get('/getheaderCateforyData',[homebannercontroller::class,'GetSubcateforydata']);
+Route::post('/category',[homebannercontroller::class, 'getcategory']);
+Route::get('/product/{item_code?}/{slug?}',[homebannercontroller::class, 'getproduct']);
+Route::get('/cart',[homebannercontroller::class, 'getcart']);
+
+Route::post('/getUserData',[homebannercontroller::class,'getuserdata']);
+
+Route::post('/getcartdata',[homebannercontroller::class,'getcartdata']);
+
+Route::post('/addtocart',[homebannercontroller::class,'addtocart']);
+Route::post('/removecart',[homebannercontroller::class,'removecart']);

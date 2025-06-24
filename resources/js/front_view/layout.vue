@@ -42,7 +42,10 @@
                                             :key="item.id"
                                             class="has--mega--menu"
                                         >
-                                            <a href="#">{{ item.name }}</a>
+                                            <router-link
+                                                :to="`/category/` + item.slug"
+                                                >{{ item.name }}</router-link
+                                            >
                                             <ul class="mega-menu">
                                                 <li class="mega-menu-wrap">
                                                     <ul class="mega-menu-col">
@@ -54,11 +57,14 @@
                                                             )"
                                                             class="mega-title"
                                                         >
-                                                            <a
-                                                                href="shop.html"
+                                                            <router-link
+                                                                :to="
+                                                                    `/category/` +
+                                                                    childitem.slug
+                                                                "
                                                                 >{{
                                                                     childitem.name
-                                                                }}</a
+                                                                }}</router-link
                                                             >
                                                         </li>
                                                     </ul>
@@ -82,12 +88,14 @@
                                                 ><i
                                                     class="flaticon-shopping-bag"
                                                 ></i
-                                                ><span>0</span></a
+                                                ><span>{{ CartCount }}</span></a
                                             >
                                             <ul class="minicart">
                                                 <li
                                                     class="d-flex align-items-start"
-                                                >
+
+                                                v-if="CartCount > 0" v-for="items in CartProduct" :key="items.id"
+                                                    >
                                                     <div class="cart-img">
                                                         <a href="#"
                                                             ><img
@@ -98,81 +106,41 @@
                                                     <div class="cart-content">
                                                         <h4>
                                                             <a href="#"
-                                                                >Exclusive
-                                                                Winter
-                                                                Jackets</a
+                                                                >{{ items.products[0].name }}</a
                                                             >
                                                         </h4>
                                                         <div class="cart-price">
                                                             <span class="new"
-                                                                >$229.9</span
+                                                                >Rs {{ items.products[0].product_attr[0].price }}</span
                                                             >
                                                             <span
                                                                 ><del
-                                                                    >$229.9</del
+                                                                    >{{ items.products[0].product_attr[0].mrp }}</del
                                                                 ></span
                                                             >
                                                         </div>
                                                     </div>
                                                     <div class="del-icon">
-                                                        <a href="#"
-                                                            ><i
+                                                        <a href="javascript:void(0)"  @click="removecartdata(items.products[0].id,1,items.products[0].product_attr[0].id)"><i
                                                                 class="far fa-trash-alt"
                                                             ></i
                                                         ></a>
                                                     </div>
                                                 </li>
-                                                <li
-                                                    class="d-flex align-items-start"
-                                                >
-                                                    <div class="cart-img">
-                                                        <a href="#"
-                                                            ><img
-                                                                src="../assets/img/product/cart_p02.jpg"
-                                                                alt=""
-                                                        /></a>
-                                                    </div>
-                                                    <div class="cart-content">
-                                                        <h4>
-                                                            <a href="#"
-                                                                >Winter Jackets
-                                                                For Women</a
-                                                            >
-                                                        </h4>
-                                                        <div class="cart-price">
-                                                            <span class="new"
-                                                                >$229.9</span
-                                                            >
-                                                            <span
-                                                                ><del
-                                                                    >$229.9</del
-                                                                ></span
-                                                            >
-                                                        </div>
-                                                    </div>
-                                                    <div class="del-icon">
-                                                        <a href="#"
-                                                            ><i
-                                                                class="far fa-trash-alt"
-                                                            ></i
-                                                        ></a>
-                                                    </div>
-                                                </li>
+
                                                 <li>
                                                     <div class="total-price">
                                                         <span class="f-left"
                                                             >Total:</span
                                                         >
                                                         <span class="f-right"
-                                                            >$239.9</span
+                                                            > Rs: {{ cartTotal }}</span
                                                         >
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <div class="checkout-link">
-                                                        <a href="#"
-                                                            >Shopping Cart</a
-                                                        >
+                                                        <router-link to="/cart">sjopping</router-link>
                                                         <a
                                                             class="black-color"
                                                             href="#"
@@ -536,7 +504,7 @@
 
     <!-- main-area -->
     <main>
-        <slot name="content"></slot>
+        <slot name="content"  :addtotdata="addtotdata" :CartProduct="CartProduct"></slot>
     </main>
     <!-- footer-area -->
     <footer class="dark-bg pt-55 pb-80" style="padding-bottom: 0rem">
@@ -640,13 +608,38 @@
 <script>
 import axios from "axios";
 import getheadercate from "./providers";
+import { RouterLink } from "vue-router";
 export default {
     name: "layout",
+    props: {
+  addtotdata: {
+    type: Function,
+    default: () => {}
+  }
+},
+
     data() {
         return {
             headercategories: [],
+            CartCount: 0,
+            CartTotal: 0,
+            CartProduct: [],
+            user_info: {
+                user_id: "",
+                auth: false,
+            },
         };
     },
+    watch:{
+  CartProduct(val){
+    this.cartTotal = 0;
+    for(var item in val){
+      this.cartTotal += val[item].qty *  val[item].products[0].product_attr[0].price;
+    }
+console.log(this.cartTotal);
+  }
+
+},
     mounted() {
         var src = [
             "../front_assets/js/main.js",
@@ -664,8 +657,106 @@ export default {
             document.getElementById("scripts").appendChild(script);
         }
         this.getcategories();
+        this.getuser();
+this.getcartdata();
     },
     methods: {
+        async removecartdata(product_id,qty,product_attr_id){
+try {
+
+let data=await axios.post(getheadercate().removecart,{
+'token':this.user_info.user_id,
+'product_id':product_id,
+'qty':qty,
+'product_attr_id':product_attr_id,
+});
+if(data.status=200){
+    this.getcartdata();
+}
+} catch (error) {
+
+}
+
+        },
+        async addtotdata(product_id,qty,product_attr_id){
+            try {
+
+
+            let data=await axios.post(getheadercate().addtocart,{
+
+                'token':this.user_info.user_id,
+                'auth':this.user_info.auth,
+                'product_id':product_id,
+                'qty':qty,
+                'product_attr_id':product_attr_id,
+            });
+            if(data.status==200){
+this.getcartdata();
+            }
+
+        } catch (error) {
+
+            }
+        },
+        async getcartdata(){
+            try {
+
+
+            let data=await axios.post(getheadercate().getcartdata,{
+
+                'token':this.user_info.user_id,
+            });
+            if(data.status==200){
+this.CartCount=data.data.data.data.length;
+console.log(this.CartCount);
+this.CartProduct=data.data.data.data;
+console.log('sa',this.CartProduct[0].qty);
+            }
+
+        } catch (error) {
+
+            }
+        },
+        async getuser() {
+            if (localStorage.getItem("user_info")) {
+                var user = localStorage.getItem("user_info");
+                console.log("ds", testUser);
+                var testUser = JSON.parse(user);
+                this.user_info.user_id = testUser.user_id;
+
+                this.getUserData();
+            } else {
+                this.getUserData();
+            }
+        },
+
+        async getUserData() {
+            try {
+                let data = await axios.post(getheadercate().getUserData, {
+                    token: this.user_info.user_id,
+                });
+                if (data.status == 200) {
+                    if (data.data.data.data.user_type == 1) {
+                        this.user_info.auth = true;
+                        this.user_info.user_id = data.data.data.data.token;
+                        localStorage.setItem(
+                            "user_info",
+                            JSON.stringify(this.user_info)
+                        );
+                    } else {
+                        this.user_info.auth = false;
+                        this.user_info.user_id = data.data.data.data.token;
+                        localStorage.setItem(
+                            "user_info",
+                            JSON.stringify(this.user_info)
+                        );
+                    }
+                } else {
+                    console.log("data not found");
+                }
+            } catch (error) {}
+        },
+
         async getcategories() {
             try {
                 let data = await axios.get(
@@ -673,7 +764,6 @@ export default {
                 );
 
                 this.headercategories = data.data.data.data;
-
             } catch (error) {
                 console.log(error);
             }

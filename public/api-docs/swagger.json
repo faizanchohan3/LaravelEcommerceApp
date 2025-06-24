@@ -361,6 +361,7 @@
         }
       }
     },
+
     "/gethomedata": {
         "get": {
           "tags": [
@@ -377,6 +378,39 @@
             }
           ],
 
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      },
+      "/category/{Slug}": {
+        "post": {
+          "tags": [
+            "Category"
+          ],
+          "summary": "Category",
+          "operationId": "logCategoryin",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "parameters": [
+
+            {
+              "name": "Slug",
+              "in": "path",
+              "description": "Enter Slug",
+              "required": true,
+              "type": "string"
+            }
+          ],
           "responses": {
             "200": {
               "description": "Data"

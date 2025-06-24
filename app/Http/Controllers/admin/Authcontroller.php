@@ -67,11 +67,11 @@ class Authcontroller extends Controller
     {
 
         $user = new User();
-        $user->name = 'seller123';
-        $user->email = 'seller132@gmail.com';
+        $user->name = 'admin1236';
+        $user->email = 'admin132@gmail.com';
         $user->password = Hash::make('1234');
         $user->save();
-        $admin = roles::where('slug', 'Seller')->first();
+        $admin = roles::where('slug', 'Admin')->first();
         $user->roles()->attach($admin);
         return redirect()->back();
     }
@@ -80,8 +80,6 @@ class Authcontroller extends Controller
 
     public function loginuser(Request $request)
     {
-
-
 
         //  $valdation = Validator::make($request->all, [
 
@@ -94,8 +92,10 @@ class Authcontroller extends Controller
 
         // } else {
         $cred = array('email' => $request->emails, 'password' => $request->password);
+
         if (Auth::attempt($cred, false)) {
             if (Auth::user()->hasRole('admin')) {
+
                 return response()->json(['status' => 200, 'message' => 'Ad Usser', 'url' => 'admin/dashboard']);
             } else {
                 return response()->json(['status' => 200, 'message' => 'non Usser']);
@@ -109,6 +109,7 @@ class Authcontroller extends Controller
     }
     public function login(Request $request)
     {
+        dd($request->emails);
 
         $validation = Validator::make($request->all(),[
             'email' => 'required|string|email|',

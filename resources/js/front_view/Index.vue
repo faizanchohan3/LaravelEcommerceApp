@@ -1,6 +1,6 @@
 <template>
-    <Layout>
-        <template v-slot:content>
+    <Layout :addtotdata="addtotdata">
+        <template v-slot:content="{ addtotdata }">
             <!-- slider-area -->
             <section class="slider-area position-relative">
                 <div class="third-slider-active">
@@ -372,7 +372,10 @@
                                                         <i class="far fa-star"></i>
                                                         <i class="far fa-star"></i>
                                                     </div>
-                                                    <h5><a href="shop-details.html">{{ item.name }}</a></h5>
+                                                    <h5>
+
+                                                        <router-link :to="`/product/`+item.item_code+`/`+item.slug">{{ item.name }}</router-link>
+                                                    </h5>
                                                     <div class="price-wrapper">
                                                         <span class="currency">$</span>
                                                         <span class="price">
@@ -390,7 +393,7 @@
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div class="features-product-cart"><a href="cart.html">add to cart</a></div>
+                                                <div class="features-product-cart"><a href="javascript:void(0)" @click="addtotdata(item.id,1,item.product__attr && item.product__attr.length > 0 ? item.product__attr[0].id : 'No price data')">add to cart</a></div>
                                             </div>
                                         </div>
 
@@ -708,11 +711,13 @@ export default {
     },
     mounted() {
         this.getdata();
+
     },
     components: {
         Layout,
     },
     methods: {
+
         setActiveFilter(index) {
             this.activeFilter = index;
         },

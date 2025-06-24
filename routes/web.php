@@ -16,7 +16,7 @@ Route::get('/login', function () {
 
     return view('auth.signinn');
 });
-Route::post('/registration_process', [Authcontroller::class, 'loginuser']);
+Route::get('/registration_process', [Authcontroller::class, 'loginuser']);
 //ADMIN PROFILE
 
 Route::middleware('admin')->group(function () {
@@ -80,3 +80,7 @@ Route::get('/', function () {
 });
 
 
+Route::get('/{vue_capture?}', function () {
+
+    return view('index');
+})->where('vue_capture','[\/\w\.-]*');

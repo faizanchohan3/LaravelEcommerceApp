@@ -72,8 +72,7 @@
     <script>
         $("#formSubmit").submit(function(e) {
             e.preventDefault()
-            if ($(this).parsley().validate());
-             {
+
                 var url = "{{ url('registration_process') }}";
 
                 $.ajax({
@@ -94,7 +93,7 @@
                         }
                     }
 
-                });
+
             }
 
         });

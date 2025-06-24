@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class brand extends Model
+class Brand extends Model
 {
-    protected $fillable=['text','slug'];
+    use HasFactory;
+
+    protected $fillable = ['text', 'slug'];
 }
