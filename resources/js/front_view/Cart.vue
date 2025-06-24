@@ -84,7 +84,8 @@
                                 <div class="shop-cart-widget">
                                     <form action="#">
                                         <ul>
-                                            <li class="sub-total"><span>SUBTOTAL</span> $ 136.00</li>
+
+                                            <li class="sub-total"><span>SUBTOTAL</span> Rs  {{ SlotProps.cartTotal }}</li>
                                             <li>
                                                 <span>SHIPPING</span>
                                                 <div class="shop-check-wrap">

@@ -504,7 +504,7 @@
 
     <!-- main-area -->
     <main>
-        <slot name="content"  :addtotdata="addtotdata" :CartProduct="CartProduct"></slot>
+        <slot name="content"  :addtotdata="addtotdata" :CartProduct="CartProduct" :cartTotal="cartTotal" ></slot>
     </main>
     <!-- footer-area -->
     <footer class="dark-bg pt-55 pb-80" style="padding-bottom: 0rem">
