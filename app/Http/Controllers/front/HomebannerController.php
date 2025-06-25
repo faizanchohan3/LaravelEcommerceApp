@@ -197,44 +197,62 @@ class HomebannerController extends Controller
             return $this->error($validation->errors()->first(), 400, []);
         } else {
             $usertoken = tempuser::where('token', $request->token)->first();
-            $data = cart::updateOrCreate(['user_id' => $usertoken->id, 'user_type' => $usertoken->user_type, 'product_id' => $request->product_id, 'product_attr_id' => $request->product_attr_id, 'qty' => $request->qty]);
-            return $this->success(['data' => $data], 'successfully ff update');
+            $data = cart::where([
+                'user_id' => $usertoken->id,
+                'user_type' => $usertoken->user_type,
+                'product_id' => $request->product_id,
+                'product_attr_id' => $request->product_attr_id
+            ])->first();
+
+            if ($data) {
+                // Increment the quantity
+                $data->qty += $request->qty;
+                $data->save();
+            } else {
+                // Create new cart item
+                $data = cart::create([
+                    'user_id' => $usertoken->id,
+                    'user_type' => $usertoken->user_type,
+                    'product_id' => $request->product_id,
+                    'product_attr_id' => $request->product_attr_id,
+                    'qty' => $request->qty
+                ]);
+                       return $this->success(['data' => $data], 'successfully ff update');
 
         }
 
     }
-
+    }
     public function removecart(Request $request)
     {
-
         $validation = Validator::make($request->all(), [
-
             'token' => 'required|exists:tempusers,token',
             'product_id' => 'required|exists:products,id',
             'qty' => 'required|numeric|min:0|not-in:0',
             'product_attr_id' => 'required|exists:product_attrs,id',
-
         ]);
         if ($validation->fails()) {
             return $this->error($validation->errors()->first(), 400, []);
         } else {
             $usertoken = tempuser::where('token', $request->token)->first();
-            $cart = cart::where(
-                ['user_id' => $usertoken->id, 'user_type' => $usertoken->user_type, 'product_id' => $request->product_id, 'product_attr_id' => $request->product_attr_id, 'qty' => $request->qty]
-            )->first();
-            if (isset($cart->id)) {
-                $qty = $request->qty;
-                if ($cart->qty == $qty) {
-                    $cart->delete();
+            $cart = cart::where([
+                'user_id' => $usertoken->id,
+                'user_type' => $usertoken->user_type,
+                'product_id' => $request->product_id,
+                'product_attr_id' => $request->product_attr_id
+            ])->first();
 
-                } elseif ($cart->qty > $qty) {
-
-                    $cart->qty -= $qty;
+            if ($cart) {
+                if ($cart->qty > $request->qty) {
+                    $cart->qty -= $request->qty;
+                    $cart->save();
                 } else {
+                    // If qty to remove is equal or more, delete the cart item
                     $cart->delete();
                 }
-
             }
+
+            return $this->success([], 'Cart updated successfully');
         }
     }
     public function getproduct($item_code='',$slug=''){
@@ -244,7 +262,7 @@ if(isset($product)){
     $data=Product::where(['item_code'=>$item_code,'slug'=>$slug])->with('product_attr')->first();
     $data['otherproduct']=Product::where('category_id',$data->category_id)->with('product_attr')->get();
     return $this->success(['data'=>$data],'successfully updata');
-prx($data->toArray());
+
 }
 else
 {

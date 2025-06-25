@@ -54,14 +54,14 @@
                                                         <form action="#" class="num-block">
                                                             <input type="text" class="in-num" :value="item.qty" readonly="">
                                                             <div class="qtybutton-box">
-                                                                <span class="plus"><img src="img/icon/plus.png" alt=""></span>
-                                                                <span class="minus dis"><img src="img/icon/minus.png" alt=""></span>
+                                                                <span v-on:click="SlotProps.addtotdata(item.products[0].id, 1, item.products[0].product_attr[0].id)" class="qty-btn plus">+</span>
+                                                                <span @click="SlotProps.removecartdata(item.products[0].id, 1, item.products[0].product_attr[0].id)" class="qty-btn minus">-</span>
                                                             </div>
                                                         </form>
                                                     </div>
                                                 </td>
                                                 <td class="product-subtotal"><span>{{ item.products[0].product_attr[0].price * item.qty }}</span></td>
-                                                <td class="product-delete"><a href="#"><i class="flaticon-trash"></i></a></td>
+                                                <td class="product-delete"><a href="javascript:void(0)" @click="SlotProps.removecartdata(item.products[0].id,item.qty,item.products[0].product_attr[0].id)"><i class="flaticon-trash"></i></a></td>
                                             </tr>
 
                                         </tbody>
@@ -166,3 +166,14 @@ methods:{
 }
 };
 </script>
+<style>
+.qty-btn {
+  cursor: pointer;
+  padding: 0 8px;
+  font-weight: bold;
+  user-select: none;
+}
+.qty-value {
+  margin: 0 5px;
+}
+</style>
