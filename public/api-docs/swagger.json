@@ -1,0 +1,504 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "\n\nHeader -> api_key :  \n\n",
+    "version": "1.0.0",
+    "title": "Swagger App"
+  },
+  "host": "127.0.0.1:8000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "User",
+      "description": "All User Operations"
+    },
+    {
+      "name": "Product",
+      "description": "All Product Operations"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User Login",
+        "operationId": "login",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Enter Email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data"
+
+          }
+        }
+      }
+    },
+    "/getdetails": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User Login",
+          "operationId": "getdeatls",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Enter Bearer Token",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      },
+      "/updateuser": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User update",
+          "operationId": "Update User",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Enter Bearer Token",
+              "required": true,
+              "type": "string"
+            },     {
+                "name": "names",
+                "in": "header",
+                "description": "Enter name",
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      },
+      "/logout": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User logout",
+          "operationId": "logout",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "Enter Bearer Token",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      },
+    "/products": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "Get all products",
+        "operationId": "getProducts",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "type": "integer",
+            "default": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "type": "integer",
+            "default": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of products",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/product"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Product"],
+        "summary": "Create a new product",
+        "operationId": "createProduct",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Product name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Product description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "Product price",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "stock",
+            "in": "formData",
+            "description": "Product stock quantity",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "schema": {
+              "$ref": "#/definitions/product"
+            }
+          }
+        }
+      }
+    },
+    "/products/{productId}": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "Get product by ID",
+        "operationId": "getProductById",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "schema": {
+              "$ref": "#/definitions/product"
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Product"],
+        "summary": "Update product",
+        "operationId": "updateProduct",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Product name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Product description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "Product price",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "stock",
+            "in": "formData",
+            "description": "Product stock quantity",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "schema": {
+              "$ref": "#/definitions/product"
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Product"],
+        "summary": "Delete product",
+        "operationId": "deleteProduct",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+
+    "/gethomedata": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "get home data",
+          "operationId": "gethomedata",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      },
+      "/category/{Slug}": {
+        "post": {
+          "tags": [
+            "Category"
+          ],
+          "summary": "Category",
+          "operationId": "logCategoryin",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "parameters": [
+
+            {
+              "name": "Slug",
+              "in": "path",
+              "description": "Enter Slug",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      },
+      "/getheaderCateforyData": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "get home data",
+          "operationId": "getcategory",
+          "produces": [
+            "application/json"
+          ],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+
+          "responses": {
+            "200": {
+              "description": "Data"
+
+            }
+          }
+        }
+      }
+  },
+  "securityDefinitions": {
+    "APIKeyHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "api-key"
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "stock": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "schemes": [
+    "http",
+    "https"
+  ]
+}
